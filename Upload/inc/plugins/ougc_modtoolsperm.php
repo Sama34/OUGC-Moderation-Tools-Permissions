@@ -8,7 +8,7 @@
  *   
  *   Website: http://community.mybb.com/user-25096.html
  *
- *   Allows you to select which hroups can use each moderator tool.
+ *   Allows you to select which groups can use each custom moderator tool.
  *
  ***************************************************************************
  

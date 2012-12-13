@@ -8,7 +8,7 @@
  *   
  *   Website: http://community.mybb.com/user-25096.html
  *
- *   Allows you to select which hroups can use each moderator tool.
+ *   Allows you to select which groups can use each custom moderator tool.
  *
  ***************************************************************************
  
@@ -28,7 +28,7 @@
 ****************************************************************************/
  
 $l['ougc_modtoolsperm'] = 'OUGC Moderation Tools Permissions';
-$l['ougc_modtoolsperm_d'] = 'Allows you to select which hroups can use each moderator tool.';
+$l['ougc_modtoolsperm_d'] = 'Allows you to select which groups can use each custom moderator tool.';
 
 $l['ougc_modtoolsperm_container'] = 'Available to groups';
 $l['ougc_modtoolsperm_all'] = 'All groups';
