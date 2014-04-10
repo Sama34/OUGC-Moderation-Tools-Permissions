@@ -4,9 +4,9 @@
  *
  *   OUGC Moderation Tools Permissions plugin (/inc/plugins/ougc_modtoolsperm.php)
  *	 Author: Omar Gonzalez
- *   Copyright: © 2012 Omar Gonzalez
+ *   Copyright: Â© 2012-2014 Omar Gonzalez
  *   
- *   Website: http://community.mybb.com/user-25096.html
+ *   Website: http://omarg.me
  *
  *   Allows you to select which groups can use each custom moderator tool.
  *
@@ -41,12 +41,12 @@ if(defined('IN_ADMINCP'))
 }
 else
 {
-	$plugins->add_hook('moderation_start', 'ougc_modtoolsperm_moderation');
-	#$plugins->add_hook('forumdisplay_start', 'ougc_modtoolsperm_hide');
-	#$plugins->add_hook('showthread_start', 'ougc_modtoolsperm_hide');
+	$plugins->add_hook('moderation_start', 'ougc_modtoolsperm_moderation', -999);
+	$plugins->add_hook('forumdisplay_start', 'ougc_modtoolsperm_hide');
+	$plugins->add_hook('showthread_start', 'ougc_modtoolsperm_hide');
 }
 
-//Necessary plugin information for the ACP plugin manager.
+// Plugin API
 function ougc_modtoolsperm_info()
 {
 	global $lang;
@@ -57,14 +57,15 @@ function ougc_modtoolsperm_info()
 		'description'	=> $lang->ougc_modtoolsperm_d,
 		'website'		=> 'http://mods.mybb.com/view/ougc-moderation-tools-permissions',
 		'author'		=> 'Omar Gonzalez',
-		'authorsite'	=> 'http://community.mybb.com/user-25096.html',
+		'authorsite'	=> 'http://omarg.me',
 		'version'		=> '1.0',
+		'versioncode'	=> 1000,
 		'compatibility'	=> '16*',
-		'guid'			=> '6e80880bd41907f9513b5545e0c7451d',
+		'guid'			=> '6e80880bd41907f9513b5545e0c7451d'
 	);
 }
 
-// Install the plugin.
+// _install() routine
 function ougc_modtoolsperm_install()
 {
 	global $db;
@@ -75,7 +76,7 @@ function ougc_modtoolsperm_install()
 	}
 }
 
-// Check if plugin is installed.
+// _is_installed() routine
 function ougc_modtoolsperm_is_installed()
 {
 	global $db;
@@ -83,7 +84,7 @@ function ougc_modtoolsperm_is_installed()
 	return (bool)$db->field_exists('groups', 'modtools');
 }
 
-// Uninstall the plugin.
+// _uninstall() routine
 function ougc_modtoolsperm_uninstall()
 {
 	global $db;
@@ -152,7 +153,7 @@ function ougc_modtoolsperm_modtools_commit()
 		return;
 	}
 
-	global $db;
+	global $db, $tid;
 
 	$cleangroups = '';
 	if((int)$mybb->input['group_type'] != 1 && $groups = array_filter(array_unique(array_map('intval', (array)$mybb->input['group_1_groups']))))
@@ -160,7 +161,7 @@ function ougc_modtoolsperm_modtools_commit()
 		$cleangroups = implode(',', $groups);
 	}
 
-	$db->update_query('modtools', array('groups' => $db->escape_string($cleangroups)), 'tid=\''.(int)(in_array($mybb->input['action'], array('add_thread_tool', 'add_post_tool')) ? $GLOBALS['tid'] : $mybb->input['tid']).'\'');
+	$db->update_query('modtools', array('groups' => $db->escape_string($cleangroups)), 'tid=\''.(int)(in_array($mybb->input['action'], array('add_thread_tool', 'add_post_tool')) ? $tid : $mybb->input['tid']).'\'');
 }
 
 // Moderation hook to check permissions (custom moderator permissions too).
@@ -168,7 +169,7 @@ function ougc_modtoolsperm_moderation()
 {
 	global $mybb;
 
-	if(in_array($mybb->input['action'], array('reports', 'allreports', 'getip', 'cancel_delayedmoderation', 'delayedmoderation', 'cancel_delayedmoderation', 'do_delayedmoderation', 'delayedmoderation', 'openclosethread', 'stick', 'removeredirects', 'deletethread', 'do_deletethread', 'deletepoll', 'do_deletepoll', 'approvethread', 'unapprovethread', 'deleteposts', 'do_deleteposts', 'mergeposts', 'do_mergeposts', 'move', 'do_move', 'threadnotes', 'do_threadnotes', 'getip', 'merge', 'do_merge', 'split', 'do_split', 'removesubscriptions', 'multideletethreads', 'do_multideletethreads', 'multiopenthreads', 'multiclosethreads', 'multiapprovethreads', 'multiunapprovethreads', 'multistickthreads', 'multiunstickthreads', 'multimovethreads', 'do_multimovethreads', 'multideleteposts', 'do_multideleteposts', 'multimergeposts', 'do_multimergeposts', 'multisplitposts', 'do_multisplitposts', 'multiapproveposts', 'multiunapproveposts')) || ($tid = (int)$mybb->input['action']) < 1)
+	if(in_array($mybb->input['action'], array('reports', 'allreports', 'getip', 'cancel_delayedmoderation', 'delayedmoderation', 'do_delayedmoderation', 'openclosethread', 'stick', 'removeredirects', 'deletethread', 'do_deletethread', 'deletepoll', 'do_deletepoll', 'approvethread', 'unapprovethread', 'deleteposts', 'do_deleteposts', 'mergeposts', 'do_mergeposts', 'move', 'do_move', 'threadnotes', 'do_threadnotes', 'merge', 'do_merge', 'split', 'do_split', 'removesubscriptions', 'multideletethreads', 'do_multideletethreads', 'multiopenthreads', 'multiclosethreads', 'multiapprovethreads', 'multiunapprovethreads', 'multistickthreads', 'multiunstickthreads', 'multimovethreads', 'do_multimovethreads', 'multideleteposts', 'do_multideleteposts', 'multimergeposts', 'do_multimergeposts', 'multisplitposts', 'do_multisplitposts', 'multiapproveposts', 'multiunapproveposts')) || ($tid = (int)$mybb->input['action']) < 1)
 	{
 		return;
 	}
@@ -253,7 +254,7 @@ function ougc_modtoolsperm_hide()
 	}
 
 	// Do it!
-	ougc_modtoolsperm_control_object($db, '
+	control_object($db, '
 		function query($string, $hide_errors=0, $write_query=0)
 		{
 			if(!$write_query && strpos($string, \''.$search.'\') && !strpos($string, \''.$replace.'\'))
@@ -283,41 +284,44 @@ function ougc_modtoolsperm_check_groups($groups)
 }
 
 // control_object by Zinga Burga from MyBBHacks ( mybbhacks.zingaburga.com ), 1.62
-function ougc_modtoolsperm_control_object(&$obj, $code)
+if(!function_exists('control_object'))
 {
-	static $cnt = 0;
-	$newname = '_objcont_'.(++$cnt);
-	$objserial = serialize($obj);
-	$classname = get_class($obj);
-	$checkstr = 'O:'.strlen($classname).':"'.$classname.'":';
-	$checkstr_len = strlen($checkstr);
-	if(substr($objserial, 0, $checkstr_len) == $checkstr)
+	function control_object(&$obj, $code)
 	{
-		$vars = array();
-		// grab resources/object etc, stripping scope info from keys
-		foreach((array)$obj as $k => $v)
+		static $cnt = 0;
+		$newname = '_objcont_'.(++$cnt);
+		$objserial = serialize($obj);
+		$classname = get_class($obj);
+		$checkstr = 'O:'.strlen($classname).':"'.$classname.'":';
+		$checkstr_len = strlen($checkstr);
+		if(substr($objserial, 0, $checkstr_len) == $checkstr)
 		{
-			if($p = strrpos($k, "\0"))
+			$vars = array();
+			// grab resources/object etc, stripping scope info from keys
+			foreach((array)$obj as $k => $v)
 			{
-				$k = substr($k, $p+1);
-			}
-			$vars[$k] = $v;
-		}
-		if(!empty($vars))
-		{
-			$code .= '
-				function ___setvars(&$a) {
-					foreach($a as $k => &$v)
-						$this->$k = $v;
+				if($p = strrpos($k, "\0"))
+				{
+					$k = substr($k, $p+1);
 				}
-			';
+				$vars[$k] = $v;
+			}
+			if(!empty($vars))
+			{
+				$code .= '
+					function ___setvars(&$a) {
+						foreach($a as $k => &$v)
+							$this->$k = $v;
+					}
+				';
+			}
+			eval('class '.$newname.' extends '.$classname.' {'.$code.'}');
+			$obj = unserialize('O:'.strlen($newname).':"'.$newname.'":'.substr($objserial, $checkstr_len));
+			if(!empty($vars))
+			{
+				$obj->___setvars($vars);
+			}
 		}
-		eval('class '.$newname.' extends '.$classname.' {'.$code.'}');
-		$obj = unserialize('O:'.strlen($newname).':"'.$newname.'":'.substr($objserial, $checkstr_len));
-		if(!empty($vars))
-		{
-			$obj->___setvars($vars);
-		}
+		// else not a valid object or PHP serialize has changed
 	}
-	// else not a valid object or PHP serialize has changed
 }

@@ -4,9 +4,9 @@
  *
  *   OUGC Moderation Tools Permissions plugin (/inc/languages/english/admin/ougc_modtoolsperm.lang.php)
  *	 Author: Omar Gonzalez
- *   Copyright: © 2012 Omar Gonzalez
+ *   Copyright: Â© 2012-2014 Omar Gonzalez
  *   
- *   Website: http://community.mybb.com/user-25096.html
+ *   Website: http://omarg.me
  *
  *   Allows you to select which groups can use each custom moderator tool.
  *

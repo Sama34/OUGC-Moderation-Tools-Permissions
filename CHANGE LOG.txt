@@ -1,0 +1,4 @@
+1.0 => 1.1
+==============================
+	- Bug: xThreads "Modify Custom Thread Field" was not working. (#1)
+	- Enhancement: Thread/Post tools unavailable to moderators are now hidden.
