@@ -58,8 +58,8 @@ function ougc_modtoolsperm_info()
 		'website'		=> 'http://mods.mybb.com/view/ougc-moderation-tools-permissions',
 		'author'		=> 'Omar Gonzalez',
 		'authorsite'	=> 'http://omarg.me',
-		'version'		=> '1.0',
-		'versioncode'	=> 1000,
+		'version'		=> '1.1',
+		'versioncode'	=> 1100,
 		'compatibility'	=> '16*',
 		'guid'			=> '6e80880bd41907f9513b5545e0c7451d'
 	);
