@@ -2,27 +2,27 @@
 
 /***************************************************************************
  *
- *   OUGC Moderation Tools Permissions plugin (/inc/plugins/ougc_modtoolsperm.php)
- *	 Author: Omar Gonzalez
- *   Copyright: © 2012-2014 Omar Gonzalez
- *   
- *   Website: http://omarg.me
+ *	OUGC Moderation Tools Permissions plugin (/inc/plugins/ougc_modtoolsperm.php)
+ *	Author: Omar Gonzalez
+ *	Copyright: © 2012-2014 Omar Gonzalez
  *
- *   Allows you to select which groups can use each custom moderator tool.
+ *	Website: http://omarg.me
+ *
+ *	Allows you to select which groups can use each custom moderator tool.
  *
  ***************************************************************************
- 
+
 ****************************************************************************
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
-	
+
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ****************************************************************************/
@@ -65,6 +65,33 @@ function ougc_modtoolsperm_info()
 	);
 }
 
+// _activate() routine
+function ougc_modtoolsperm_activate()
+{
+	global $cache;
+
+	// Insert/update version into cache
+	$plugins = $cache->read('ougc_plugins');
+	if(!$plugins)
+	{
+		$plugins = array();
+	}
+
+	$info = ougc_modtoolsperm_info();
+
+	if(!isset($plugins['modtoolsperm']))
+	{
+		$plugins['modtoolsperm'] = $info['versioncode'];
+	}
+
+	/*~*~* RUN UPDATES START *~*~*/
+
+	/*~*~* RUN UPDATES END *~*~*/
+
+	$plugins['modtoolsperm'] = $info['versioncode'];
+	$cache->update('ougc_plugins', $plugins);
+}
+
 // _install() routine
 function ougc_modtoolsperm_install()
 {
@@ -87,11 +114,31 @@ function ougc_modtoolsperm_is_installed()
 // _uninstall() routine
 function ougc_modtoolsperm_uninstall()
 {
-	global $db;
+	global $db, $cache;
 
 	if($db->field_exists('groups', 'modtools'))
 	{
 		$db->drop_column('modtools', 'groups');
+	}
+
+	// Delete version from cache
+	$plugins = (array)$cache->read('ougc_plugins');
+
+	if(isset($plugins['modtoolsperm']))
+	{
+		unset($plugins['modtoolsperm']);
+	}
+
+	if(!empty($plugins))
+	{
+		$cache->update('ougc_plugins', $plugins);
+	}
+	else
+	{
+		global $db;
+
+		$db->delete_query('datacache', 'title=\'ougc_plugins\'');
+		!is_object($cache->handler) or $cache->handler->delete('ougc_plugins');
 	}
 }
 
